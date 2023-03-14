@@ -3,6 +3,10 @@ import { client } from "../config/db.js";
 import fs from "fs";
 import Product from "../models/productSchema.js";
 
+// @desc : upload a product
+// @access: user
+// @route : api/products/upload
+// @method : post
 export const uploadProduct = async (req, res) => {
   try {
     console.log(req.file);
@@ -49,6 +53,10 @@ export const uploadProduct = async (req, res) => {
   }
 };
 
+// @desc : get all the products
+// @access: public
+// @route : api/products
+// @method : get
 export const getProducts = async (req, res) => {
   try {
     const products = await Product.find({}).limit(20);
@@ -60,6 +68,10 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// @desc : get the product image
+// @access: public
+// @route : api/products/img/:filename
+// @method : get
 export const getImg = async (req, res) => {
   try {
     const filename = req.params.filename;
@@ -80,5 +92,21 @@ export const getImg = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.json({ error: error.message });
+  }
+};
+
+export const getAProduct = async (req, res) => {
+  try {
+    console.log(req.params.id)
+    const id = req.params.id;
+    const product = await Product.findById(id);
+    if (product) res.status(200).json(product);
+    else {
+        res.status(400)
+        throw new Error("Bad Request");
+    }
+  } catch (error) {
+    console.log(error);
+    return res.json({ error: error.message, status: "error" });
   }
 };
